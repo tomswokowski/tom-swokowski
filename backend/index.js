@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Example API
 app.get('/api', (req, res) => {
-  res.json({ message: 'Hello from backend!' });
+  res.json({ message: 'Hello from backend' });
 });
 
 // SPA fallback (for Vue in prod)
