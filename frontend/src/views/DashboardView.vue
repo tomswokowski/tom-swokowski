@@ -26,6 +26,10 @@ onMounted(() => {
 });
 
 const login = () => {
-  window.location.href = 'http://localhost:3001/auth/github';
+  const backendURL = import.meta.env.PROD
+    ? '' // same origin in prod
+    : 'http://localhost:3001';
+
+  window.location.href = `${backendURL}/auth/github`;
 };
 </script>
