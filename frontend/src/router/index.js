@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 import HomeView from '@/views/HomeView.vue';
 import AboutView from '@/views/AboutView.vue';
+import DashboardView from '@/views/DashboardView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes = [
@@ -13,6 +14,11 @@ const routes = [
   {
     path: '/about',
     component: AboutView,
+    meta: { layout: 'MinimalLayout' },
+  },
+  {
+    path: '/dashboard',
+    component: DashboardView,
     meta: { layout: 'MinimalLayout' },
   },
   {

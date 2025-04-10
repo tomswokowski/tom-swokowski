@@ -2,15 +2,25 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const router = express.Router();
 
-const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, ALLOWED_GITHUB_ID, JWT_SECRET } = process.env;
+const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, ALLOWED_GITHUB_ID, JWT_SECRET, NODE_ENV } =
+  process.env;
 
-// Step 1: Redirect to GitHub
+const isProd = NODE_ENV === 'production';
+
+const COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: isProd,
+  sameSite: isProd ? 'Strict' : 'Lax',
+  path: '/',
+};
+
+// Redirect user to GitHub for login
 router.get('/github', (req, res) => {
-  const redirect = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`;
-  res.redirect(redirect);
+  const githubAuthURL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`;
+  res.redirect(githubAuthURL);
 });
 
-// Step 2: Handle GitHub callback
+// GitHub callback
 router.get('/github/callback', async (req, res) => {
   const { code } = req.query;
 
@@ -29,13 +39,12 @@ router.get('/github/callback', async (req, res) => {
       }),
     });
 
-    const tokenData = await tokenRes.json();
-    const accessToken = tokenData.access_token;
+    const { access_token } = await tokenRes.json();
 
-    // Fetch GitHub profile
+    // Fetch user profile
     const userRes = await fetch('https://api.github.com/user', {
       headers: {
-        Authorization: `token ${accessToken}`,
+        Authorization: `token ${access_token}`,
         Accept: 'application/json',
       },
     });
@@ -43,26 +52,28 @@ router.get('/github/callback', async (req, res) => {
     const githubUser = await userRes.json();
 
     if (String(githubUser.id) !== String(ALLOWED_GITHUB_ID)) {
-      return res.status(401).json({ error: 'Not allowed' });
+      return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Sign JWT
+    // Sign and set cookie
     const token = jwt.sign({ id: githubUser.id, login: githubUser.login }, JWT_SECRET, {
       expiresIn: '7d',
     });
 
-    // Send cookie
-    res.cookie('token', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'Strict',
-    });
+    res.cookie('token', token, COOKIE_OPTIONS);
 
-    res.redirect('/dashboard');
+    const redirectTo = isProd ? '/dashboard' : 'http://localhost:5173/dashboard';
+    res.redirect(redirectTo);
   } catch (err) {
     console.error('GitHub OAuth error:', err);
     res.status(500).json({ error: 'GitHub login failed' });
   }
+});
+
+// Logout: clear the cookie
+router.post('/logout', (req, res) => {
+  res.clearCookie('token', COOKIE_OPTIONS);
+  res.status(200).json({ message: 'Logged out' });
 });
 
 module.exports = router;

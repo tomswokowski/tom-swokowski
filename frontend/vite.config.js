@@ -26,6 +26,7 @@ export default defineConfig(async () => {
     server: {
       proxy: {
         '/api': 'http://localhost:3001',
+        '/auth': 'http://localhost:3001',
       },
     },
   };
