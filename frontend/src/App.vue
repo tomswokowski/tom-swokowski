@@ -1,3 +1,3 @@
 <template>
-  <div>Tom Swokowski</div>
+  <div class="text-xl">Tom Swokowski</div>
 </template>

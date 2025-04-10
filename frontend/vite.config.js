@@ -2,9 +2,10 @@ import { fileURLToPath, URL } from 'node:url';
 import path from 'path';
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig(async () => {
-  const plugins = [vue()];
+  const plugins = [vue(), tailwindcss()];
 
   if (process.env.NODE_ENV !== 'production') {
     const { default: vueDevTools } = await import('vite-plugin-vue-devtools');
