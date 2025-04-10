@@ -1,3 +1,3 @@
 <template>
-  <div class="text-xl">Tom Swokowski</div>
+  <div class="m-4 text-xl">Tom Swokowski</div>
 </template>
