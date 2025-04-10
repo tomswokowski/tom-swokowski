@@ -1,17 +1,26 @@
 import { fileURLToPath, URL } from 'node:url';
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig(async () => {
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd());
+
   const plugins = [vue(), tailwindcss()];
 
-  if (process.env.NODE_ENV !== 'production') {
-    const { default: vueDevTools } = await import('vite-plugin-vue-devtools');
-    plugins.push(vueDevTools());
+  if (env.NODE_ENV !== 'production') {
+    return import('vite-plugin-vue-devtools').then(({ default: vueDevTools }) => {
+      plugins.push(vueDevTools());
+
+      return baseConfig(env, plugins);
+    });
   }
 
+  return baseConfig(env, plugins);
+});
+
+function baseConfig(env, plugins) {
   return {
     plugins,
     resolve: {
@@ -25,9 +34,9 @@ export default defineConfig(async () => {
     },
     server: {
       proxy: {
-        '/api': 'http://localhost:3001',
-        '/auth': 'http://localhost:3001',
+        '/api': env.VITE_BACKEND_URL,
+        '/auth': env.VITE_BACKEND_URL,
       },
     },
   };
-});
+}

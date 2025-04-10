@@ -1,34 +1,32 @@
 import { defineStore } from 'pinia';
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
+import { useApi } from '@/composables/useApi';
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(null);
+  const { request } = useApi();
+
+  const isLoggedIn = computed(() => !!user.value);
 
   async function fetchUser() {
     try {
-      const res = await fetch('/api/user', {
-        credentials: 'include',
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        user.value = data.user;
-      } else {
-        user.value = null;
-      }
+      const data = await request('/api/user');
+      user.value = data.user;
     } catch {
       user.value = null;
     }
   }
 
+  function login() {
+    const backendURL = import.meta.env.PROD ? '' : import.meta.env.VITE_BACKEND_URL;
+    window.location.href = `${backendURL}/auth/github`;
+  }
+
   function logout() {
-    fetch('/auth/logout', {
-      method: 'POST',
-      credentials: 'include',
-    }).finally(() => {
+    request('/auth/logout', { method: 'POST' }).finally(() => {
       user.value = null;
     });
   }
 
-  return { user, fetchUser, logout };
+  return { user, isLoggedIn, fetchUser, login, logout };
 });
