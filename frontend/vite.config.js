@@ -4,23 +4,21 @@ import { defineConfig, loadEnv } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import tailwindcss from '@tailwindcss/vite';
 
-export default defineConfig(({ mode }) => {
+export default defineConfig(async ({ mode }) => {
   const env = loadEnv(mode, process.cwd());
+  const isDev = env.NODE_ENV !== 'production';
 
   const plugins = [vue(), tailwindcss()];
 
-  if (env.NODE_ENV !== 'production') {
-    return import('vite-plugin-vue-devtools').then(({ default: vueDevTools }) => {
+  if (isDev) {
+    try {
+      const { default: vueDevTools } = await import('vite-plugin-vue-devtools');
       plugins.push(vueDevTools());
-
-      return baseConfig(env, plugins);
-    });
+    } catch {
+      console.warn('[vite] vite-plugin-vue-devtools not installed, skipping...');
+    }
   }
 
-  return baseConfig(env, plugins);
-});
-
-function baseConfig(env, plugins) {
   return {
     plugins,
     resolve: {
@@ -39,4 +37,4 @@ function baseConfig(env, plugins) {
       },
     },
   };
-}
+});
