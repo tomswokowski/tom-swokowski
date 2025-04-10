@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "serve": "NODE_ENV=production node index.js"
+    "serve": "node index.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
