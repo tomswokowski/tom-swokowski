@@ -3,7 +3,7 @@
     <h1 class="mb-4 text-2xl font-bold">Admin Login</h1>
 
     <div v-if="userStore.isLoggedIn">
-      <p class="text-green-600">Already logged in! Redirecting...</p>
+      <p class="text-green-600">Already logged in. Redirecting...</p>
     </div>
 
     <div v-else>
