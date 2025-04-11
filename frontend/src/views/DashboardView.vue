@@ -2,7 +2,7 @@
   <div class="p-6">
     <h1 class="mb-4 text-2xl font-bold">Dashboard</h1>
 
-    <div v-if="user.isLoggedIn">
+    <div v-if="userStore.isLoggedIn">
       <p>Welcome, {{ userStore.user.login }} 👋</p>
       <p class="mt-4 text-sm text-gray-500">This is your protected content.</p>
       <button @click="handleLogout" class="mt-4 text-red-600 underline">Logout</button>
@@ -27,6 +27,6 @@ const handleLogin = () => {
 
 const handleLogout = async () => {
   await logout();
-  user.clearUser();
+  userStore.clearUser();
 };
 </script>
