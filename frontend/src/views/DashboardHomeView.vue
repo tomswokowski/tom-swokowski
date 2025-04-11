@@ -4,7 +4,7 @@
 
     <div v-if="userStore.isLoggedIn">
       <p>Welcome, {{ userStore.user.login }} 👋</p>
-      <p class="mt-4 text-sm text-gray-500">This is your protected content.</p>
+      <p class="mt-4 text-sm text-gray-500">This is your admin dashboard.</p>
       <button @click="handleLogout" class="mt-4 text-red-600 underline">Logout</button>
     </div>
 

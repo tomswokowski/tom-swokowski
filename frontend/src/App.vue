@@ -11,6 +11,7 @@ import { useUserStore } from '@/stores/user';
 
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
 
 const route = useRoute();
 const userStore = useUserStore();
@@ -22,6 +23,7 @@ onMounted(() => {
 const layouts = {
   DefaultLayout,
   MinimalLayout,
+  DashboardLayout,
 };
 
 const layoutComponent = computed(() => {

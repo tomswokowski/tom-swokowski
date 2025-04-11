@@ -2,7 +2,9 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 import HomeView from '@/views/HomeView.vue';
 import AboutView from '@/views/AboutView.vue';
-import DashboardView from '@/views/DashboardView.vue';
+import DashboardLayout from '@/layouts/DashboardLayout.vue';
+import DashboardHomeView from '@/views/DashboardHomeView.vue';
+import DashboardNotesView from '@/views/DashboardNotesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes = [
@@ -18,8 +20,17 @@ const routes = [
   },
   {
     path: '/dashboard',
-    component: DashboardView,
-    meta: { layout: 'MinimalLayout' },
+    component: DashboardLayout,
+    children: [
+      {
+        path: '',
+        component: DashboardHomeView,
+      },
+      {
+        path: 'notes',
+        component: DashboardNotesView,
+      },
+    ],
   },
   {
     path: '/:pathMatch(.*)*',
