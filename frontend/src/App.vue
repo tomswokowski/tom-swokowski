@@ -7,16 +7,16 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { useAuthStore } from '@/stores/auth';
+import { useUserStore } from '@/stores/user';
 
 import DefaultLayout from '@/layouts/DefaultLayout.vue';
 import MinimalLayout from '@/layouts/MinimalLayout.vue';
 
 const route = useRoute();
-const auth = useAuthStore();
+const userStore = useUserStore();
 
 onMounted(() => {
-  auth.fetchUser();
+  userStore.setUser();
 });
 
 const layouts = {

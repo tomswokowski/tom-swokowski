@@ -2,21 +2,31 @@
   <div class="p-6">
     <h1 class="mb-4 text-2xl font-bold">Dashboard</h1>
 
-    <div v-if="auth.isLoggedIn">
-      <p>Welcome, {{ auth.user.login }} 👋</p>
+    <div v-if="user.isLoggedIn">
+      <p>Welcome, {{ userStore.user.login }} 👋</p>
       <p class="mt-4 text-sm text-gray-500">This is your protected content.</p>
-      <button @click="auth.logout" class="mt-4 text-red-600 underline">Logout</button>
+      <button @click="handleLogout" class="mt-4 text-red-600 underline">Logout</button>
     </div>
 
     <div v-else>
       <p class="mb-4">This page is for admins only.</p>
-      <button @click="auth.login" class="text-blue-600 underline">Login with GitHub</button>
+      <button @click="handleLogin" class="text-blue-600 underline">Login with GitHub</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useAuthStore } from '@/stores/auth';
+import { useUserStore } from '@/stores/user';
+import { login, logout } from '@/api/user';
 
-const auth = useAuthStore();
+const userStore = useUserStore();
+
+const handleLogin = () => {
+  login();
+};
+
+const handleLogout = async () => {
+  await logout();
+  user.clearUser();
+};
 </script>
