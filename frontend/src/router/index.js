@@ -2,6 +2,7 @@ import { createWebHistory, createRouter } from 'vue-router';
 
 import HomeView from '@/views/HomeView.vue';
 import AboutView from '@/views/AboutView.vue';
+import AdminLoginView from '@/views/AdminLoginView.vue';
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import DashboardHomeView from '@/views/DashboardHomeView.vue';
 import DashboardNotesView from '@/views/DashboardNotesView.vue';
@@ -16,6 +17,11 @@ const routes = [
   {
     path: '/about',
     component: AboutView,
+    meta: { layout: 'MinimalLayout' },
+  },
+  {
+    path: '/admin',
+    component: AdminLoginView,
     meta: { layout: 'MinimalLayout' },
   },
   {
