@@ -16,7 +16,7 @@ const route = useRoute();
 const userStore = useUserStore();
 
 onMounted(() => {
-  userStore.setUser();
+  userStore.loadUser();
 });
 
 const layouts = {

@@ -11,6 +11,6 @@ export function logout() {
   });
 }
 
-export async function fetchUser() {
+export async function getUser() {
   return await apiFetch('/api/user');
 }
