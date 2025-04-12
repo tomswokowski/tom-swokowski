@@ -38,9 +38,7 @@ const router = createRouter({
 router.beforeEach(async (to, from, next) => {
   const userStore = useUserStore();
 
-  if (userStore.user === null) {
-    await userStore.loadUser();
-  }
+  await userStore.loadUser();
 
   if (to.matched.some((record) => record.meta.requiresAuth) && !userStore.isLoggedIn) {
     return next('/admin');
