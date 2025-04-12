@@ -1,4 +1,5 @@
 import { createWebHistory, createRouter } from 'vue-router';
+import { useUserStore } from '@/stores/user';
 
 import HomeView from '@/views/HomeView.vue';
 import AboutView from '@/views/AboutView.vue';
@@ -9,33 +10,16 @@ import DashboardNotesView from '@/views/DashboardNotesView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes = [
-  {
-    path: '/',
-    component: HomeView,
-    meta: { layout: 'DefaultLayout' },
-  },
-  {
-    path: '/about',
-    component: AboutView,
-    meta: { layout: 'MinimalLayout' },
-  },
-  {
-    path: '/admin',
-    component: AdminLoginView,
-    meta: { layout: 'MinimalLayout' },
-  },
+  { path: '/', component: HomeView, meta: { layout: 'DefaultLayout' } },
+  { path: '/about', component: AboutView, meta: { layout: 'MinimalLayout' } },
+  { path: '/admin', component: AdminLoginView, meta: { layout: 'MinimalLayout' } },
   {
     path: '/dashboard',
     component: DashboardLayout,
+    meta: { requiresAuth: true },
     children: [
-      {
-        path: '',
-        component: DashboardHomeView,
-      },
-      {
-        path: 'notes',
-        component: DashboardNotesView,
-      },
+      { path: '', component: DashboardHomeView },
+      { path: 'notes', component: DashboardNotesView },
     ],
   },
   {
@@ -46,7 +30,23 @@ const routes = [
   },
 ];
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
 });
+
+router.beforeEach(async (to, from, next) => {
+  const userStore = useUserStore();
+
+  if (userStore.user === null) {
+    await userStore.loadUser();
+  }
+
+  if (to.matched.some((record) => record.meta.requiresAuth) && !userStore.isLoggedIn) {
+    return next('/admin');
+  }
+
+  next();
+});
+
+export default router;

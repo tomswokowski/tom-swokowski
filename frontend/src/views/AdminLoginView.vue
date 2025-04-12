@@ -22,7 +22,9 @@ import { login } from '@/api/user';
 const userStore = useUserStore();
 const router = useRouter();
 
-onMounted(() => {
+onMounted(async () => {
+  await userStore.loadUser();
+
   if (userStore.isLoggedIn) {
     router.replace('/dashboard');
   }
