@@ -1,5 +1,7 @@
-const express = require('express');
-const jwt = require('jsonwebtoken');
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import prisma from '../lib/prisma.js';
+
 const router = express.Router();
 
 const { GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET, ALLOWED_GITHUB_ID, JWT_SECRET, NODE_ENV } =
@@ -14,13 +16,13 @@ const COOKIE_OPTIONS = {
   path: '/',
 };
 
-// Redirect user to GitHub for login
+// Redirect to GitHub OAuth
 router.get('/github', (req, res) => {
   const githubAuthURL = `https://github.com/login/oauth/authorize?client_id=${GITHUB_CLIENT_ID}&scope=user`;
   res.redirect(githubAuthURL);
 });
 
-// GitHub callback
+// GitHub Callback
 router.get('/github/callback', async (req, res) => {
   const { code } = req.query;
 
@@ -41,7 +43,7 @@ router.get('/github/callback', async (req, res) => {
 
     const { access_token } = await tokenRes.json();
 
-    // Fetch user profile
+    // Fetch GitHub user profile
     const userRes = await fetch('https://api.github.com/user', {
       headers: {
         Authorization: `token ${access_token}`,
@@ -55,8 +57,18 @@ router.get('/github/callback', async (req, res) => {
       return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    // Sign and set cookie
-    const token = jwt.sign({ id: githubUser.id, login: githubUser.login }, JWT_SECRET, {
+    // Upsert user in DB
+    const user = await prisma.user.upsert({
+      where: { githubId: githubUser.id.toString() },
+      update: { username: githubUser.login },
+      create: {
+        githubId: githubUser.id.toString(),
+        username: githubUser.login,
+      },
+    });
+
+    // Sign and set cookie with user ID
+    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, {
       expiresIn: '7d',
     });
 
@@ -70,10 +82,10 @@ router.get('/github/callback', async (req, res) => {
   }
 });
 
-// Logout: clear the cookie
+// Logout
 router.post('/logout', (req, res) => {
   res.clearCookie('token', COOKIE_OPTIONS);
   res.status(200).json({ message: 'Logged out' });
 });
 
-module.exports = router;
+export default router;
