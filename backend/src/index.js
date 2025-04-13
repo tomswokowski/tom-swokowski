@@ -38,7 +38,7 @@ app.use('/api', apiRoutes);
 
 if (process.env.NODE_ENV === 'production') {
   // Serve static files
-  app.use(express.static(join(__dirname, 'public')));
+  app.use(express.static(join(__dirname, '..', 'public')));
 
   // SPA fallback
   app.get(/^\/(?!api|auth).*/, (req, res) => {
