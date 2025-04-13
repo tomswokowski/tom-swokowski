@@ -1,14 +1,10 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
-import prisma from '../lib/prisma.js';
+import prisma from '../../lib/prisma.js';
 
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'Hello from backend' });
-});
-
-router.get('/user', async (req, res) => {
+router.get('/', async (req, res) => {
   const token = req.cookies?.token;
 
   if (!token) {

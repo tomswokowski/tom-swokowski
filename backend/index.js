@@ -6,8 +6,8 @@ import dotenv from 'dotenv';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
-import authRoutes from './routes/auth.js';
-import apiRoutes from './routes/api.js';
+import authRoutes from './routes/auth/index.js';
+import apiRoutes from './routes/index.js';
 
 dotenv.config();
 
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(helmet());
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV !== 'production') {
   app.use(
     cors({
       origin: process.env.VITE_DEV_ORIGIN,
@@ -48,7 +48,7 @@ if (process.env.NODE_ENV === 'production') {
 
 // Start server
 app.listen(PORT, () => {
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.NODE_ENV !== 'production') {
     console.log(
       `✅ Server listening on ${process.env.VITE_DEV_ORIGIN || `http://localhost:${PORT}`}`
     );
