@@ -26,7 +26,7 @@ app.use(helmet());
 if (process.env.NODE_ENV === 'development') {
   app.use(
     cors({
-      origin: 'http://localhost:5173',
+      origin: process.env.VITE_DEV_ORIGIN,
       credentials: true,
     })
   );
@@ -36,15 +36,23 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
-// Static files (for prod)
-app.use(express.static(join(__dirname, 'public')));
+if (process.env.NODE_ENV === 'production') {
+  // Serve static files
+  app.use(express.static(join(__dirname, 'public')));
 
-// SPA fallback (Vue)
-app.get(/^\/(?!api|auth).*/, (req, res) => {
-  res.sendFile(join(__dirname, 'public', 'index.html'));
-});
+  // SPA fallback
+  app.get(/^\/(?!api|auth).*/, (req, res) => {
+    res.sendFile(join(__dirname, 'public', 'index.html'));
+  });
+}
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server listening on http://localhost:${PORT}`);
+  if (process.env.NODE_ENV === 'development') {
+    console.log(
+      `✅ Server listening on ${process.env.VITE_DEV_ORIGIN || `http://localhost:${PORT}`}`
+    );
+  } else {
+    console.log(`✅ Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+  }
 });
