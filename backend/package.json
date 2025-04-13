@@ -4,8 +4,8 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "serve": "node index.js"
+    "dev": "NODE_PATH=./src nodemon src/index.js",
+    "serve": "NODE_PATH=./src node src/index.js"
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
