@@ -7,6 +7,8 @@ import AdminLoginView from '@/views/AdminLoginView.vue';
 import DashboardLayout from '@/layouts/DashboardLayout.vue';
 import DashboardHomeView from '@/views/DashboardHomeView.vue';
 import DashboardNotesView from '@/views/DashboardNotesView.vue';
+import DashboardNoteDetailView from '@/views/DashboardNoteDetailView.vue';
+import DashboardNoteCreateView from '@/views/DashboardNoteCreateView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes = [
@@ -20,6 +22,8 @@ const routes = [
     children: [
       { path: '', component: DashboardHomeView },
       { path: 'notes', component: DashboardNotesView },
+      { path: 'notes/new', component: DashboardNoteCreateView },
+      { path: 'notes/:id', component: DashboardNoteDetailView },
     ],
   },
   {

@@ -14,5 +14,9 @@ export async function apiFetch(path, options = {}) {
     throw new Error(error.message || 'API error');
   }
 
+  if (res.status === 204 || res.headers.get('Content-Length') === '0') {
+    return null;
+  }
+
   return res.json();
 }
