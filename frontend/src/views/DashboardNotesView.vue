@@ -26,9 +26,15 @@
             <p class="whitespace-pre-wrap text-gray-700">{{ note.content }}</p>
             <p class="mt-2 text-sm text-gray-400">Last updated: {{ formatDate(note.updatedAt) }}</p>
           </div>
-          <div class="ml-4 flex flex-col gap-2">
+          <div class="ml-4 flex flex-col gap-2 text-right">
             <RouterLink :to="`/dashboard/notes/${note.id}`" class="text-blue-600 hover:underline">
               View
+            </RouterLink>
+            <RouterLink
+              :to="`/dashboard/notes/edit/${note.id}`"
+              class="text-yellow-600 hover:underline"
+            >
+              Edit
             </RouterLink>
             <button @click="deleteNote(note.id)" class="text-red-600 hover:underline">
               Delete
